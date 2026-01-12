@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using POS.Models; // pastikan namespace Product ada di sini
+using POS.Models;
 
 namespace POS.Data
 {
@@ -11,5 +11,10 @@ namespace POS.Data
         }
 
         public DbSet<Product> Products { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<TransactionItem> TransactionItems { get; set; }
+        public DbSet<User> Users { get; set; }
+
+
     }
 }

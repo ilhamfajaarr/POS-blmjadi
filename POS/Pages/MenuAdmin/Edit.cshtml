@@ -1,0 +1,39 @@
+﻿@page "{id:int}"
+@model POS.Pages.MenuAdmin.EditModel
+
+<h3>Edit Menu</h3>
+
+<form method="post" enctype="multipart/form-data" class="card p-3">
+    <!-- Simpan Id produk yang sedang diedit -->
+    <input type="hidden" asp-for="Product.Id" />
+
+    <div class="mb-2">
+        <label>Nama</label>
+        <input class="form-control" asp-for="Product.Name" required />
+    </div>
+
+    <div class="mb-2">
+        <label>Harga</label>
+        <input class="form-control" asp-for="Product.Price" step="0.01" required />
+    </div>
+
+    <div class="mb-2">
+        <label>Gambar</label>
+        <!-- Upload gambar baru (opsional) -->
+        <input type="file" class="form-control" name="ImageFile" accept="image/*" />
+    </div>
+
+    @if (Model.Product.ImageUrl != null)
+    {
+        <!-- Preview gambar lama -->
+        <img src="@Model.Product.ImageUrl" width="150" class="mb-2" />
+    }
+
+    <div class="mt-3">
+        <!-- Simpan perubahan -->
+        <button class="btn btn-primary">Simpan</button>
+
+        <!-- Kembali tanpa menyimpan -->
+        <a asp-page="Index" class="btn btn-secondary">Kembali</a>
+    </div>
+</form>

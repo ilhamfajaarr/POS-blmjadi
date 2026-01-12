@@ -1,0 +1,66 @@
+﻿@page
+@model ReportsModel
+@{
+    ViewData["Title"] = "Reports";
+}
+
+<!-- Form filter laporan -->
+<form method="get" class="mb-4">
+    <div class="row">
+        <div class="col-md-3">
+            <label>From Date</label>
+            <!-- Filter tanggal awal -->
+            <input type="date" name="from" value="@Request.Query["from"]" class="form-control" />
+        </div>
+
+        <div class="col-md-3">
+            <label>To Date</label>
+            <!-- Filter tanggal akhir -->
+            <input type="date" name="to" value="@Request.Query["to"]" class="form-control" />
+        </div>
+
+        <div class="col-md-3">
+            <label>Product</label>
+            <!-- Filter berdasarkan nama produk -->
+            <input type="text" name="product" value="@Request.Query["product"]" class="form-control" placeholder="Nama produk..." />
+        </div>
+
+        <div class="col-md-3">
+            <label>Transaction ID</label>
+            <!-- Filter berdasarkan ID transaksi -->
+            <input type="number" name="tid" value="@Request.Query["tid"]" class="form-control" />
+        </div>
+    </div>
+
+    <button class="btn btn-primary mt-3" type="submit">Filter</button>
+    <!-- Reset filter -->
+    <a href="/Reports/Reports" class="btn btn-secondary mt-3">Reset</a>
+</form>
+
+<!-- Tabel hasil laporan -->
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Transaction ID</th>
+            <th>Product</th>
+            <th>Qty</th>
+            <th>Price</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Tampilkan data dari ReportData -->
+        @foreach (var item in Model.ReportData)
+        {
+            <tr>
+                <td>@item.Date.ToString("yyyy-MM-dd HH:mm")</td>
+                <td>@item.TransactionId</td>
+                <td>@item.ProductName</td>
+                <td>@item.Quantity</td>
+                <td>@item.Price</td>
+                <td>@item.Total</td>
+            </tr>
+        }
+    </tbody>
+</table>

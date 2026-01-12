@@ -1,0 +1,53 @@
+﻿@page
+@model POS.Pages.MenuAdmin.IndexModel
+
+<h3 class="mb-3">Manajemen Menu</h3>
+
+<!-- FORM TAMBAH MENU -->
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <h5 class="mb-3">Tambah Menu</h5>
+
+        <form method="post" enctype="multipart/form-data">
+            <div class="row g-2">
+                <div class="col-md-3">
+                    <input type="text" class="form-control" asp-for="NewProduct.Name" placeholder="Nama Menu" required />
+                </div>
+                <div class="col-md-2">
+                    <input type="number" class="form-control" asp-for="NewProduct.Price" placeholder="Harga" step="0.01" required />
+                </div>
+                <div class="col-md-4">
+                    <input type="file" class="form-control" name="ImageFile" accept="image/*" />
+                </div>
+                <div class="col-md-1">
+                    <button class="btn btn-success w-100">Tambah</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<!-- GRID PRODUK -->
+<div class="row">
+    @foreach (var item in Model.Products)
+    {
+        <div class="col-md-3 mb-4">
+            <div class="card shadow-sm h-100">
+                <img src="@item.ImageUrl" class="card-img-top" style="height:150px; object-fit:cover;" />
+                <div class="card-body text-center">
+                    <h6>@item.Name</h6>
+                    <p class="text-muted">Rp @item.Price.ToString("N0")</p>
+
+                    <div class="d-flex justify-content-center gap-2">
+                        <a class="btn btn-warning btn-sm" asp-page="Edit" asp-route-id="@item.Id">Edit</a>
+
+                        <form method="post" asp-page-handler="Delete" asp-route-id="@item.Id">
+                            <button class="btn btn-danger btn-sm" onclick="return confirm('Hapus menu ini?')">Hapus</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

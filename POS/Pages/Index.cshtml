@@ -5,11 +5,39 @@
     ViewData["Title"] = "POS - Coffee Shop";
 }
 
+<style>
+    @@media print {
+        body *
+
+    {
+        visibility: hidden;
+    }
+
+    #printArea,
+    #printArea * {
+        visibility: visible;
+    } 
+
+    #printArea {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+    }
+
+    .no-print {
+        display: none !important;
+    }
+
+    }
+</style>
+
+
 <div class="container-fluid mt-4">
     <div class="row">
-        <!-- struk di kiri -->
-        <div class="col-md-4 bg-light p-3 rounded shadow-sm">
-            <h4 class="text-center mb-3"> Struk Pembelian</h4>
+        <!-- struk di kiri (print area) -->
+        <div id="printArea" class="col-md-4 bg-light p-3 rounded shadow-sm">
+            <h4 class="text-center mb-3">Struk Pembelian</h4>
             <div id="clock" class="text-center fw-bold mb-3"></div>
 
             <table class="table table-bordered text-center align-middle">
@@ -29,14 +57,16 @@
                 <h5 class="text-end fw-bold mt-2">Total Bayar: Rp <span id="totalAmount">0</span></h5>
             </div>
 
-            <div class="d-grid mt-3">
-                <button class="btn btn-success" onclick="saveTransaction()">Simpan Transaksi</button>
+            <div class="d-grid mt-3 gap-2 no-print">
+                <button class="btn btn-primary" onclick="saveTransaction('print')">Print Struk</button>
+                <input type="text" id="waNumber" placeholder="08xxxxxxxxxx" />
+                <button class="btn btn-success" onclick="saveTransaction('whatsapp')">Kirim via WhatsApp</button>
             </div>
         </div>
 
-        <!--  bagian kanan -->
+        <!-- bagian kanan -->
         <div class="col-md-8">
-            <h4 class="mb-3 text-center"> Daftar Produk</h4>
+            <h4 class="mb-3 text-center">Daftar Produk</h4>
             <div class="row overflow-auto" style="max-height: 75vh;">
                 @foreach (var item in Model.Products)
                 {
@@ -46,7 +76,11 @@
                             <div class="card-body text-center">
                                 <h6>@item.Name</h6>
                                 <p class="text-muted">Rp @item.Price.ToString("N0")</p>
-                                <button class="btn btn-primary btn-sm" onclick="addToCart('@item.Name', @item.Price)">Tambah</button>
+                                <button class="btn btn-primary btn-sm add-btn"
+                                        data-name="@item.Name"
+                                        data-price="@item.Price">
+                                    Tambah
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -56,70 +90,5 @@
     </div>
 </div>
 
-<!-- script kasir -->
-<script>
-    let total = 0;
-    let cart = [];
 
-    function addToCart(name, price) {
-        const existing = cart.find(p => p.name === name);
-        if (existing) {
-            existing.qty++;
-        } else {
-            cart.push({ name, price, qty: 1 });
-        }
-        updateCart();
-    }
-
-    function decreaseQty(index) {
-        if (cart[index].qty > 1) {
-            cart[index].qty--;
-        } else {
-            cart.splice(index, 1);
-        }
-        updateCart();
-    }
-
-    function updateCart() {
-        const cartBody = document.getElementById("cartBody");
-        cartBody.innerHTML = "";
-        total = 0;
-
-        cart.forEach((item, index) => {
-            total += item.price * item.qty;
-            const row = `
-                <tr>
-                    <td>${item.name}</td>
-                    <td>
-                        <button class="btn btn-sm btn-danger me-1" onclick="decreaseQty(${index})">-</button>
-                        ${item.qty}
-                        <button class="btn btn-sm btn-success ms-1" onclick="addToCart('${item.name}', ${item.price})">+</button>
-                    </td>
-                    <td>Rp ${(item.price * item.qty).toLocaleString()}</td>
-                </tr>`;
-            cartBody.innerHTML += row;
-        });
-
-        const tax = total * 0.1;
-        const grandTotal = total + tax;
-
-        document.getElementById("subtotal").textContent = total.toLocaleString();
-        document.getElementById("taxAmount").textContent = tax.toLocaleString();
-        document.getElementById("totalAmount").textContent = grandTotal.toLocaleString();
-    }
-
-    function saveTransaction() {
-        const time = new Date().toLocaleTimeString();
-        alert("Transaksi disimpan pada " + time);
-        cart = [];
-        updateCart();
-    }
-
-    function updateClock() {
-        const now = new Date();
-        document.getElementById("clock").textContent = now.toLocaleTimeString();
-    }
-
-    setInterval(updateClock, 1000);
-    updateClock();
-</script>
+<script src="~/js/pos.js"></script>
